@@ -1,96 +1,130 @@
-# 🚗Software-Defined Vehicle (SDV) – Vehicle Signal Simulation and Validation
+# 🚗 Software-Defined Vehicle (SDV) – OTA Update System
 
 ## Overview
-Built a software-defined vehicle simulation platform with signal services, OTA update flows, diagnostics, and CI-driven safety validation
+A comprehensive Over-The-Air (OTA) update system for Software-Defined Vehicles (SDV) that handles secure software updates, verification, rollback capabilities, and vehicle state management.
 
-### This SDV project series demonstrates:
-- A signal publisher (speed, RPM, battery)
-- A consumer (ADAS / monitoring service)
-- Validation & fault injection
-- CI tests for safety rules
-- Test-driven development
-- Automation and Mocking
-
-### The Vehicle Signal Service focuses on:
-- Signal definitions (speed, brake, gear, battery)
-- CAN-like message simulation (no hardware)
-- Signal decoder / encoder
-- Fault injection (dropped signals, invalid values)
+### Features
+- **OTA Package Management**: Create and manage update packages with manifests
+- **Security Verification**: Hash and digital signature verification for update integrity
+- **Update Application**: Safe update deployment with backup and rollback support
+- **Vehicle State Tracking**: Monitor vehicle software versions and update history
+- **Rollback Management**: Automatic rollback on update failures
+- **CI/CD Integration**: Automated testing and deployment pipelines
 
 ## Tech Stack & Skills
-- Python 3.10+
-- dataclasses
-- pytest
-- Automotive signals
-- Middleware thinking
-- Simulation over hardware
-- Safety-aware logic
+- Python 3.9+
+- Cryptography for digital signatures
+- pytest for testing
+- JSON for manifest handling
+- File system operations for updates
+- Error handling and recovery
 
 ## Project Structure
-```text
-
-SDVProjects/
-└── vehicle-signal-simulator/
-    │   README.md
-    │   requirements.txt
-    │
-    ├───src
-    │   │   signals.py
-    │   │   providers.py
-    │   │   processor.py
-    │   │   validator.py
-    │   │   can_bus.py
-    │   │   message.py
-    │   │   signal_service.py
-    │   │   service.py
-    │
-    └───tests
-        │   test_processor.py
-        │   test_providers.py
-        │   test_signals.py
-        │   test_validator.py
-        │   test_can_bus.py
-        │   test_signal_service.py
-        │   test_service.py
+```
+sdv-ota-update-system/
+├── src/
+│   ├── ota_package.py        # Update package & manifest handling
+│   ├── verifier.py           # Hash / signature verification
+│   ├── updater.py            # Apply update logic with rollback
+│   ├── vehicle.py            # Vehicle software state management
+│   └── rollback.py           # Rollback handling and snapshots
+├── tests/
+│   ├── test_ota_package.py
+│   ├── test_verifier.py
+│   ├── test_updater.py
+│   └── test_rollback.py
+├── requirements.txt
+├── README.md
+└── .github/workflows/ci.yml
 ```
 
+## Architecture
 
-## Vehicle State Machine Diagram
-
-### Vehicle Signal Validator Logic
+### OTA Update Flow
 ```
-Vehicle Signals  →  Validator  →  State Processor  →  Vehicle State
-```
-
-### SDV Architecture Layers 
-```
-Apps / Cloud / HMI Features
-        ↕
-Vehicle State / Domain Logic
-        ↕
-Signal Abstraction Layer
-        ↕
-CAN Message 
-        ↕
-CAN Bus / Vehicle Network
+Update Package → Verification → Backup → Apply Update → Validation
+      ↓                                                    ↓
+   Rollback ←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←←
 ```
 
-### CAN Message Simulation
-```
-- Message ID 0x100
-- Byte 0 = vehicle speed (km/h)
-```
-
+### Key Components
+- **OTAPackage**: Manages update packages and manifests
+- **Verifier**: Ensures update integrity through hashes and signatures
+- **Updater**: Applies updates with automatic rollback on failure
+- **Vehicle**: Tracks software state and update history
+- **RollbackManager**: Handles system snapshots and recovery
 
 ## Installation
-python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-python -m pip install -r requirements.txt
 
-## Outputs:
-None
+```bash
+# Create virtual environment
+python -m venv .venv
+# Activate environment
+# Windows:
+.venv\Scripts\activate
+# Linux/Mac:
+source .venv/bin/activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+## Usage
+
+### Basic Update Process
+```python
+from src.ota_package import OTAPackage
+from src.verifier import Verifier
+from src.updater import Updater
+from src.vehicle import Vehicle
+
+# Create a vehicle instance
+vehicle = Vehicle("vehicle_001", "1.0.0")
+
+# Create an update package
+files = [
+    {"path": "software.bin", "hash": "abc123...", "size": "1024"}
+]
+package = OTAPackage("update_001", "1.1.0", files)
+
+# Set up verifier and updater
+verifier = Verifier("public_key.pem")
+updater = Updater(verifier)
+
+# Apply update
+success = updater.apply_update(package, "/vehicle/software")
+if success:
+    vehicle.record_update(package.package_id, package.version, "2024-01-01")
+```
 
 ## Testing
-```
+```bash
+# Run all tests
 python -m pytest
+
+# Run specific test file
+python -m pytest tests/test_ota_package.py
+
+# Run with coverage
+python -m pytest --cov=src
 ```
+
+## Security Considerations
+- All updates are verified using SHA256 hashes
+- Digital signatures ensure authenticity
+- Automatic rollback on verification failure
+- Backup snapshots for recovery
+- Secure key management (not included in this demo)
+
+## CI/CD
+The project includes GitHub Actions workflow for:
+- Automated testing on push/PR
+- Python 3.9 environment
+- Dependency installation and test execution
+
+## Future Enhancements
+- Delta updates for bandwidth optimization
+- Progressive rollout strategies
+- Update campaign management
+- Integration with vehicle telematics
+- Advanced rollback strategies
