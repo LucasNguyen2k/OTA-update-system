@@ -97,6 +97,7 @@ updater = Updater(verifier)
 success = updater.apply_update(package, "/vehicle/software")
 if success:
     vehicle.record_update(package.package_id, package.version, "2024-01-01")
+```
 ### Create Hash Value of binary file
 ```
 cd c:\Users\ACER\SDVProjects\OTA-update-system ; python -c "
@@ -106,7 +107,7 @@ print(f'Hash: {hash_value}')
 "
 ```
 
-```
+
 ## Testing
 ```bash
 # Run all tests
