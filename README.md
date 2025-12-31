@@ -1,5 +1,7 @@
 # 🚗 Software-Defined Vehicle (SDV) – OTA Update System
 
+[![CI](https://github.com/LucasNguyen2k/OTA-update-system/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasNguyen2k/OTA-update-system/actions/workflows/ci.yml)
+
 ## Overview
 A comprehensive Over-The-Air (OTA) update system for Software-Defined Vehicles (SDV) that handles secure software updates, verification, rollback capabilities, and vehicle state management.
 
