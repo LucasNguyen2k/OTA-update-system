@@ -25,6 +25,7 @@ A comprehensive Over-The-Air (OTA) update system for Software-Defined Vehicles (
 ```
 sdv-ota-update-system/
 ├── src/
+│   ├── main.py        
 │   ├── ota_package.py        # Update package & manifest handling
 │   ├── verifier.py           # Hash / signature verification
 │   ├── updater.py            # Apply update logic with rollback
@@ -37,6 +38,8 @@ sdv-ota-update-system/
 │   └── test_rollback.py
 ├── requirements.txt
 ├── README.md
+├── public_key.pem
+├── private_key.pem
 └── .github/workflows/ci.yml
 ```
 
