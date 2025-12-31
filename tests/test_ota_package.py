@@ -41,13 +41,13 @@ class TestOTAPackage(unittest.TestCase):
 
     def test_calculate_file_hash(self):
         # Create a temporary file with known content
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write("test content")
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
+            f.write(b"test content")
             temp_path = f.name
 
         try:
             # SHA256 hash of "test content"
-            expected_hash = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72d3"
+            expected_hash = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72"
             actual_hash = calculate_file_hash(temp_path)
             self.assertEqual(actual_hash, expected_hash)
         finally:

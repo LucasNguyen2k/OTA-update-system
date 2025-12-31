@@ -15,13 +15,13 @@ class TestVerifier(unittest.TestCase):
 
     def test_verify_hash_valid(self):
         # Create a temporary file
-        with tempfile.NamedTemporaryFile(mode='w', delete=False) as f:
-            f.write("test content")
+        with tempfile.NamedTemporaryFile(mode='wb', delete=False) as f:
+            f.write(b"test content")
             temp_path = f.name
 
         try:
             # SHA256 hash of "test content"
-            expected_hash = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72d3"
+            expected_hash = "6ae8a75555209fd6c44157c0aed8016e763ff435a19cf186f76863140143ff72"
             result = self.verifier.verify_hash(temp_path, expected_hash)
             self.assertTrue(result)
         finally:
